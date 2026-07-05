@@ -1,0 +1,21 @@
+{
+  "/(app)/book/page": "app/(app)/book/page.js",
+  "/(app)/dashboard/page": "app/(app)/dashboard/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(auth)/signup/page": "app/(auth)/signup/page.js",
+  "/(marketing)/page": "app/(marketing)/page.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/admin/bookings/route": "app/api/admin/bookings/route.js",
+  "/api/admin/staff/route": "app/api/admin/staff/route.js",
+  "/api/admin/stats/route": "app/api/admin/stats/route.js",
+  "/api/auth/me/route": "app/api/auth/me/route.js",
+  "/api/booking/[id]/route": "app/api/booking/[id]/route.js",
+  "/api/booking/my/route": "app/api/booking/my/route.js",
+  "/api/calendar/events/route": "app/api/calendar/events/route.js",
+  "/api/payment/verify/route": "app/api/payment/verify/route.js",
+  "/api/venue/addons/route": "app/api/venue/addons/route.js",
+  "/api/venue/availability/route": "app/api/venue/availability/route.js",
+  "/api/venue/packages/route": "app/api/venue/packages/route.js",
+  "/api/venue/route": "app/api/venue/route.js"
+}

@@ -1,0 +1,17 @@
+{
+  "node": {
+    "00783cd61ead7895272c52f44bbd8c55802843b79f": {
+      "workers": {
+        "app/(marketing)/page": {
+          "moduleId": 50715,
+          "async": false,
+          "exportedName": "logout",
+          "filename": "src/lib/server/actions/auth.ts"
+        }
+      },
+      "exportedName": "logout",
+      "filename": "src/lib/server/actions/auth.ts"
+    }
+  },
+  "edge": {}
+}

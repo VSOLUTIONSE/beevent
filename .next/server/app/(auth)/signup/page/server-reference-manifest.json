@@ -1,0 +1,17 @@
+{
+  "node": {
+    "408398881a99bbee01b16a6a69508ea2b0bb3b7aee": {
+      "workers": {
+        "app/(auth)/signup/page": {
+          "moduleId": 32053,
+          "async": false,
+          "exportedName": "signup",
+          "filename": "src/lib/server/actions/auth.ts"
+        }
+      },
+      "exportedName": "signup",
+      "filename": "src/lib/server/actions/auth.ts"
+    }
+  },
+  "edge": {}
+}
