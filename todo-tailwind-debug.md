@@ -1,0 +1,4 @@
+- [x] Verify Tailwind v4 processing is working end-to-end (PostCSS config + globals.css directives).
+- [x] Fix `src/app/globals.css` to use correct Tailwind v4 entry directives.
+- [ ] Ensure `layout.tsx` imports `globals.css` (already done) and that `Providers` doesn't interfere.
+- [x] Rebuild/dev and verify Tailwind classes render.
