@@ -5,11 +5,11 @@ import PackagesSection from "@/components/sections/PackagesSection";
 import CalendarPreview from "@/components/sections/CalendarPreview";
 
 export const metadata: Metadata = {
-  title: "BeeVelt Halls — Premium Event Venue in Lagos",
+  title: "BeeVent Halls — Premium Event Venue in Lagos",
   description:
-    "An architectural masterpiece in the heart of Lagos. Book BeeVelt Halls for weddings, galas, conferences, and celebrations.",
+    "An architectural masterpiece in the heart of Lagos. Book BeeVent Halls for weddings, galas, conferences, and celebrations.",
   openGraph: {
-    title: "BeeVelt Halls",
+    title: "BeeVent Halls",
     description: "Premium event venue booking platform in Lagos, Nigeria",
   },
 };

@@ -182,7 +182,7 @@ export default function BookingWizard() {
             Book Your Event
           </motion.h1>
           <p className="text-[#B0A8A8]">
-            Complete the steps below to reserve BeeVelt Halls for your special occasion.
+            Complete the steps below to reserve BeeVent Halls for your special occasion.
           </p>
 
           <div className="flex items-center gap-2 mt-8">

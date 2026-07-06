@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import LoginForm from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
-  title: "Sign In — BeeVelt Halls",
-  description: "Sign in to your BeeVelt Halls account to manage bookings",
+  title: "Sign In — BeeVent Halls",
+  description: "Sign in to your BeeVent Halls account to manage bookings",
 };
 
 export default function LoginPage() {

@@ -4,18 +4,18 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { UserPlus, ArrowLeft, Loader2 } from "lucide-react";
+import { UserPlus, ArrowLeft, Loader2, Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 import { signup } from "@/lib/server/actions/auth";
 import { GlassCard, FormField, FormInput, PillButton } from "@/design/primitives";
 
 export default function SignupForm() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError("");
     const form = new FormData(e.currentTarget);
     startTransition(async () => {
       try {
@@ -24,9 +24,10 @@ export default function SignupForm() {
           email: form.get("email") as string,
           password: form.get("password") as string,
         });
-        router.push("/book");
+        toast.success("Account created! Please sign in.");
+        router.push("/login");
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Signup failed");
+        toast.error(err instanceof Error ? err.message : "Signup failed");
       }
     });
   }
@@ -52,7 +53,7 @@ export default function SignupForm() {
         <GlassCard strong className="p-8 lg:p-10">
           <div className="text-center mb-8">
             <h1 className="font-serif text-3xl text-white mb-2">Create Account</h1>
-            <p className="text-sm text-[#B0A8A8]">Sign up to start booking events at BeeVelt Halls</p>
+            <p className="text-sm text-[#B0A8A8]">Sign up to start booking events at BeeVent Halls</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -63,10 +64,13 @@ export default function SignupForm() {
               <FormInput name="email" type="email" required placeholder="you@example.com" />
             </FormField>
             <FormField label="Password">
-              <FormInput name="password" type="password" required minLength={6} placeholder="At least 6 characters" />
+              <div className="relative">
+                <FormInput name="password" type={showPassword ? "text" : "password"} required minLength={6} placeholder="At least 6 characters" className="pr-10" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors">
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </FormField>
-
-            {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
             <PillButton type="submit" disabled={pending} className="w-full">
               {pending ? (

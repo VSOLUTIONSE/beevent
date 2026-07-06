@@ -58,17 +58,7 @@ export async function signup(data: { name: string; email: string; password: stri
     name: parsed.name,
   });
 
-  const token = await signSessionToken({ userId: user.id, email: user.email });
-  await setSessionCookie(token);
-
-  return {
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-    },
-  };
+  return { success: true };
 }
 
 export async function logout() {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DashboardClient from "@/components/dashboard/DashboardClient";
 
 export const metadata: Metadata = {
-  title: "Dashboard — BeeVelt Halls",
+  title: "Dashboard — BeeVent Halls",
   description: "Manage your bookings and venue schedule",
 };
 

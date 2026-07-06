@@ -37,7 +37,7 @@ export default function Hero() {
       <div className="absolute inset-0">
         <img
           src="/images/hero-hall.jpg"
-          alt="BeeVelt Halls interior"
+          alt="BeeVent Halls interior"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/40 to-transparent" />
@@ -80,7 +80,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.9 }}
             className="text-base lg:text-lg text-[#B0A8A8] max-w-md mb-10 leading-relaxed"
           >
-            Book BeeVelt Halls for your weddings, galas, conferences, corporate
+            Book BeeVent Halls for your weddings, galas, conferences, corporate
             events, and private celebrations, Lagos&apos; premier event venue
             platform.
           </motion.p>

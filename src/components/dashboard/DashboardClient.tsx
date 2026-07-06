@@ -18,6 +18,15 @@ import {
   ArrowLeft,
   Loader2,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@radix-ui/react-alert-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { apiGet } from "@/lib/api-client";
 import { useAuth } from "@/hooks/useAuth";
@@ -129,7 +138,7 @@ export default function DashboardClient() {
     <div className="min-h-screen bg-[#030305] flex">
       <aside className="w-64 bg-[#0F0F11] border-r border-white/5 flex-col hidden lg:flex">
         <div className="p-6">
-          <Link href="/" className="font-serif text-xl text-white">BeeVelt Halls</Link>
+          <Link href="/" className="font-serif text-xl text-white">BeeVent Halls</Link>
           <p className="text-xs text-[#B0A8A8] mt-1">Management Dashboard</p>
         </div>
         <nav className="flex-1 px-4 space-y-1">
@@ -156,14 +165,37 @@ export default function DashboardClient() {
               <p className="text-xs text-[#B0A8A8] capitalize">{user?.role || "user"}</p>
             </div>
           </div>
-          <button onClick={logout} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-[#B0A8A8] hover:bg-white/5 hover:text-white transition-all">
-            <LogOut className="w-4 h-4" />Logout
-          </button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-[#B0A8A8] hover:bg-white/5 hover:text-white transition-all">
+                <LogOut className="w-4 h-4" />Logout
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] w-full max-w-md bg-[#1A1A1E] border border-white/10 rounded-2xl p-6 shadow-2xl">
+              <div>
+                <AlertDialogTitle className="text-lg font-serif text-white">Confirm Logout</AlertDialogTitle>
+                <AlertDialogDescription className="text-sm text-[#B0A8A8] mt-1">
+                  Are you sure you want to sign out? You'll need to sign in again to manage your bookings.
+                </AlertDialogDescription>
+              </div>
+              <div className="flex gap-3 mt-6 justify-end">
+                <AlertDialogCancel className="px-4 py-2 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors">
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => logout()}
+                  className="px-4 py-2 rounded-lg text-sm bg-[#E33539] text-white hover:bg-[#E33539]/90 transition-colors"
+                >
+                  Sign Out
+                </AlertDialogAction>
+              </div>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </aside>
 
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-[#0F0F11] border-b border-white/5 px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="font-serif text-lg text-white">BeeVelt Halls</Link>
+        <Link href="/" className="font-serif text-lg text-white">BeeVent Halls</Link>
         <Link href="/" className="text-sm text-[#B0A8A8]"><ArrowLeft className="w-5 h-5" /></Link>
       </div>
 

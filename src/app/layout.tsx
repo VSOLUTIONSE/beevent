@@ -4,7 +4,7 @@ import { Providers } from "@/providers/providers";
 import { DevTools } from "@/components/dev-tools";
 
 export const metadata: Metadata = {
-  title: "BeeVelt Halls",
+  title: "BeeVent Halls",
   description: "Premium event venue booking platform",
 };
 

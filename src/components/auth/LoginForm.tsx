@@ -1,21 +1,27 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { LogIn, ArrowLeft, Loader2 } from "lucide-react";
+import { LogIn, ArrowLeft, Loader2, Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 import { login } from "@/lib/server/actions/auth";
 import { GlassCard, FormField, FormInput, PillButton } from "@/design/primitives";
 
 export default function LoginForm() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (window.location.search.includes("signup=success")) {
+      toast.success("Account created! Please sign in.");
+    }
+  }, []);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError("");
     const form = new FormData(e.currentTarget);
     startTransition(async () => {
       try {
@@ -23,9 +29,10 @@ export default function LoginForm() {
           email: form.get("email") as string,
           password: form.get("password") as string,
         });
-        router.push("/book");
+        toast.success("Signed in successfully!");
+        router.push("/");
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Login failed");
+        toast.error(err instanceof Error ? err.message : "Login failed");
       }
     });
   }
@@ -59,10 +66,13 @@ export default function LoginForm() {
               <FormInput name="email" type="email" required placeholder="you@example.com" />
             </FormField>
             <FormField label="Password">
-              <FormInput name="password" type="password" required placeholder="Enter your password" />
+              <div className="relative">
+                <FormInput name="password" type={showPassword ? "text" : "password"} required placeholder="Enter your password" className="pr-10" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors">
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </FormField>
-
-            {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
             <PillButton type="submit" disabled={pending} className="w-full">
               {pending ? (
