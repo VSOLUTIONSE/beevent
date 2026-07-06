@@ -11,7 +11,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       {children}
       <Toaster
-        position="top-center"
+        position="top-left"
         richColors
         closeButton
         toastOptions={{
