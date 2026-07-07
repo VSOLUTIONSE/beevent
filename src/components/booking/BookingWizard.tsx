@@ -33,6 +33,7 @@ import { apiGet } from "@/lib/api-client";
 import { createBooking } from "@/lib/server/actions/booking";
 import { initiatePayment, mockPaymentCallback } from "@/lib/server/actions/payment";
 import { GlassCard, PillButton } from "@/design/primitives";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import Navbar from "@/components/layout/Navbar";
 
 const eventTypes = [
@@ -253,30 +254,34 @@ export default function BookingWizard() {
                   </div>
                 </GlassCard>
 
-                <div className="space-y-4">
-                  <h3 className="font-serif text-lg text-white mb-4">Select Package</h3>
-                  {packages.map((pkg) => (
-                    <button
-                      key={pkg.id}
-                      onClick={() => setSelectedPkg(pkg.id)}
-                      className={`w-full text-left p-4 rounded-xl bg-gradient-to-b from-white/[0.12] to-white/[0.05] backdrop-blur-[6px] border border-white/15 transition-all duration-300 ${
-                        selectedPkg === pkg.id ? "ring-1 ring-[#E33539] bg-[#E33539]/5" : "hover:bg-white/[0.03]"
-                      }`}
-                    >
-                      <div className="flex items-start gap-4">
-                        <img src={pkg.imageUrl || ""} alt={pkg.name} className="w-16 h-16 rounded-lg object-cover" />
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-white font-medium text-sm">{pkg.name}</h4>
-                          <div className="flex items-center gap-3 mt-1 text-xs text-[#B0A8A8]">
-                            <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{pkg.durationHours}h</span>
-                            <span className="flex items-center gap-1"><Users className="w-3 h-3" />{pkg.maxCapacity}</span>
+                <div className="flex flex-col" style={{ height: 400 }}>
+                  <h3 className="font-serif text-lg text-white mb-4 shrink-0">Select Package</h3>
+                  <ScrollArea className="h-full pr-3">
+                    <div className="space-y-3">
+                    {packages.map((pkg) => (
+                      <button
+                        key={pkg.id}
+                        onClick={() => setSelectedPkg(pkg.id)}
+                        className={`w-full text-left p-4 rounded-xl bg-gradient-to-b from-white/[0.12] to-white/[0.05] backdrop-blur-[6px] border border-white/15 transition-all duration-300 shrink-0 ${
+                          selectedPkg === pkg.id ? "ring-1 ring-[#E33539] bg-[#E33539]/5" : "hover:bg-white/[0.03]"
+                        }`}
+                      >
+                        <div className="flex items-start gap-4">
+                          <img src={pkg.imageUrl || ""} alt={pkg.name} className="w-16 h-16 rounded-lg object-cover" />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-white font-medium text-sm">{pkg.name}</h4>
+                            <div className="flex items-center gap-3 mt-1 text-xs text-[#B0A8A8]">
+                              <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{pkg.durationHours}h</span>
+                              <span className="flex items-center gap-1"><Users className="w-3 h-3" />{pkg.maxCapacity}</span>
+                            </div>
+                            <p className="text-[#829796] font-semibold text-sm mt-2">{formatPrice(pkg.price)}</p>
                           </div>
-                          <p className="text-[#829796] font-semibold text-sm mt-2">{formatPrice(pkg.price)}</p>
+                          {selectedPkg === pkg.id && <Check className="w-5 h-5 text-[#E33539] shrink-0" />}
                         </div>
-                        {selectedPkg === pkg.id && <Check className="w-5 h-5 text-[#E33539] shrink-0" />}
-                      </div>
-                    </button>
-                  ))}
+                      </button>
+                    ))}
+                  </div>
+                  </ScrollArea>
                 </div>
               </div>
             </motion.div>
@@ -420,7 +425,7 @@ export default function BookingWizard() {
         </AnimatePresence>
 
         {step < 4 && (
-          <div className="flex items-center justify-between mt-8">
+          <div className="flex items-center justify-between mt-16">
             <PillButton variant="secondary" onClick={() => setStep((s) => (s > 1 ? (s - 1) as Step : s))} disabled={step === 1} className={step === 1 ? "opacity-40 cursor-not-allowed" : ""}>
               <ArrowLeft className="w-4 h-4" />Back
             </PillButton>
