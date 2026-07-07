@@ -5,9 +5,10 @@ import { colors, formInput, chip } from "./tokens";
 /* ─── Glass Card ─────────────────────────── */
 interface GlassCardProps extends HTMLMotionProps<"div"> {
   strong?: boolean;
+  maxHeight?: string | number;
 }
 
-export function GlassCard({ strong, className, children, ...props }: GlassCardProps) {
+export function GlassCard({ strong, maxHeight, className, children, style, ...props }: GlassCardProps) {
   return (
     <motion.div
       className={cn(
@@ -16,6 +17,7 @@ export function GlassCard({ strong, className, children, ...props }: GlassCardPr
           : "rounded-xl bg-gradient-to-b from-white/[0.12] to-white/[0.05] backdrop-blur-[6px] saturate-[140%] border border-white/15 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_8px_32px_rgba(0,0,0,0.3)]",
         className,
       )}
+      style={{ ...style, ...(maxHeight ? { maxHeight } : {}) }}
       {...props}
     >
       {children}

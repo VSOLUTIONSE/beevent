@@ -219,7 +219,7 @@ export default function BookingWizard() {
               transition={{ duration: 0.3 }}
             >
               <div className="grid lg:grid-cols-2 gap-8">
-                <GlassCard className="p-6">
+                <GlassCard maxHeight={400} className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-serif text-lg text-white">{format(calMonth, "MMMM yyyy")}</h3>
                     <div className="flex gap-1">
