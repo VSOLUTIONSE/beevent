@@ -4,31 +4,66 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { UserPlus, ArrowLeft, Loader2, Eye, EyeOff } from "lucide-react";
+import { UserPlus, ArrowLeft, Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { signup } from "@/lib/server/actions/auth";
 import { GlassCard, FormField, FormInput, PillButton } from "@/design/primitives";
+import { cn } from "@/lib/utils";
+
+type FieldErrors = {
+  name?: string;
+  email?: string;
+  password?: string;
+};
+
+function validate(name: string, email: string, password: string): FieldErrors {
+  const errors: FieldErrors = {};
+  if (!name.trim()) {
+    errors.name = "Name is required";
+  }
+  if (!email.includes("@") || !email.includes(".")) {
+    errors.email = "Please enter a valid email address";
+  }
+  if (password.length < 6) {
+    errors.password = "Password must be at least 6 characters";
+  }
+  return errors;
+}
 
 export default function SignupForm() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  function clearField(name: keyof FieldErrors) {
+    setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+    setServerError(null);
+  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setServerError(null);
+
     const form = new FormData(e.currentTarget);
+    const name = (form.get("name") as string).trim();
+    const email = (form.get("email") as string).trim();
+    const password = form.get("password") as string;
+
+    const errors = validate(name, email, password);
+    setFieldErrors(errors);
+    if (errors.name || errors.email || errors.password) return;
+
     startTransition(async () => {
-      try {
-        await signup({
-          name: form.get("name") as string,
-          email: form.get("email") as string,
-          password: form.get("password") as string,
-        });
-        toast.success("Account created! Please sign in.");
-        router.push("/login");
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Signup failed");
+      const result = await signup({ name, email, password });
+      if (!result.success) {
+        setServerError(result.error);
+        toast.error(result.error);
+        return;
       }
+      toast.success("Account created! Please sign in.");
+      router.push("/login");
     });
   }
 
@@ -56,21 +91,74 @@ export default function SignupForm() {
             <p className="text-sm text-[#B0A8A8]">Sign up to start booking events at BeeVent Halls</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <FormField label="Name">
-              <FormInput name="name" required placeholder="Your name" />
+              <FormInput
+                name="name"
+                required
+                placeholder="Your name"
+                onChange={() => clearField("name")}
+                className={cn(fieldErrors.name && "border-red-500/50 focus:border-red-500")}
+              />
+              {fieldErrors.name && (
+                <p className="flex items-center gap-1 text-xs text-red-400 mt-1">
+                  <AlertCircle className="w-3 h-3 shrink-0" />
+                  {fieldErrors.name}
+                </p>
+              )}
             </FormField>
+
             <FormField label="Email">
-              <FormInput name="email" type="email" required placeholder="you@example.com" />
+              <FormInput
+                name="email"
+                type="email"
+                required
+                placeholder="you@example.com"
+                onChange={() => clearField("email")}
+                className={cn(fieldErrors.email && "border-red-500/50 focus:border-red-500")}
+              />
+              {fieldErrors.email && (
+                <p className="flex items-center gap-1 text-xs text-red-400 mt-1">
+                  <AlertCircle className="w-3 h-3 shrink-0" />
+                  {fieldErrors.email}
+                </p>
+              )}
             </FormField>
+
             <FormField label="Password">
               <div className="relative">
-                <FormInput name="password" type={showPassword ? "text" : "password"} required minLength={6} placeholder="At least 6 characters" className="pr-10" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors">
+                <FormInput
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  placeholder="At least 6 characters"
+                  className={cn("pr-10", fieldErrors.password && "border-red-500/50 focus:border-red-500")}
+                  onChange={() => clearField("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+                  tabIndex={-1}
+                >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {fieldErrors.password && (
+                <p className="flex items-center gap-1 text-xs text-red-400 mt-1">
+                  <AlertCircle className="w-3 h-3 shrink-0" />
+                  {fieldErrors.password}
+                </p>
+              )}
             </FormField>
+
+            {serverError && (
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>{serverError}</span>
+              </div>
+            )}
 
             <PillButton type="submit" disabled={pending} className="w-full">
               {pending ? (

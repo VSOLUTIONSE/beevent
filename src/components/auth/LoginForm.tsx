@@ -4,15 +4,34 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { LogIn, ArrowLeft, Loader2, Eye, EyeOff } from "lucide-react";
+import { LogIn, ArrowLeft, Loader2, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { login } from "@/lib/server/actions/auth";
 import { GlassCard, FormField, FormInput, PillButton } from "@/design/primitives";
+import { cn } from "@/lib/utils";
+
+type FieldErrors = {
+  email?: string;
+  password?: string;
+};
+
+function validate(email: string, password: string): FieldErrors {
+  const errors: FieldErrors = {};
+  if (!email.includes("@") || !email.includes(".")) {
+    errors.email = "Please enter a valid email address";
+  }
+  if (!password) {
+    errors.password = "Password is required";
+  }
+  return errors;
+}
 
 export default function LoginForm() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
 
   useEffect(() => {
     if (window.location.search.includes("signup=success")) {
@@ -20,20 +39,32 @@ export default function LoginForm() {
     }
   }, []);
 
+  function clearField(name: keyof FieldErrors) {
+    setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+    setServerError(null);
+  }
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setServerError(null);
+
     const form = new FormData(e.currentTarget);
+    const email = (form.get("email") as string).trim();
+    const password = form.get("password") as string;
+
+    const errors = validate(email, password);
+    setFieldErrors(errors);
+    if (errors.email || errors.password) return;
+
     startTransition(async () => {
-      try {
-        await login({
-          email: form.get("email") as string,
-          password: form.get("password") as string,
-        });
-        toast.success("Signed in successfully!");
-        router.push("/");
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Login failed");
+      const result = await login({ email, password });
+      if (!result.success) {
+        setServerError(result.error);
+        toast.error(result.error);
+        return;
       }
+      toast.success("Signed in successfully!");
+      router.push("/");
     });
   }
 
@@ -61,18 +92,57 @@ export default function LoginForm() {
             <p className="text-sm text-[#B0A8A8]">Sign in to access your dashboard and manage bookings</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <FormField label="Email">
-              <FormInput name="email" type="email" required placeholder="you@example.com" />
+              <FormInput
+                name="email"
+                type="email"
+                required
+                placeholder="you@example.com"
+                onChange={() => clearField("email")}
+                className={cn(fieldErrors.email && "border-red-500/50 focus:border-red-500")}
+              />
+              {fieldErrors.email && (
+                <p className="flex items-center gap-1 text-xs text-red-400 mt-1">
+                  <AlertCircle className="w-3 h-3 shrink-0" />
+                  {fieldErrors.email}
+                </p>
+              )}
             </FormField>
+
             <FormField label="Password">
               <div className="relative">
-                <FormInput name="password" type={showPassword ? "text" : "password"} required placeholder="Enter your password" className="pr-10" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors">
+                <FormInput
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder="Enter your password"
+                  className={cn("pr-10", fieldErrors.password && "border-red-500/50 focus:border-red-500")}
+                  onChange={() => clearField("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+                  tabIndex={-1}
+                >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {fieldErrors.password && (
+                <p className="flex items-center gap-1 text-xs text-red-400 mt-1">
+                  <AlertCircle className="w-3 h-3 shrink-0" />
+                  {fieldErrors.password}
+                </p>
+              )}
             </FormField>
+
+            {serverError && (
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>{serverError}</span>
+              </div>
+            )}
 
             <PillButton type="submit" disabled={pending} className="w-full">
               {pending ? (

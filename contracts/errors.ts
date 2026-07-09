@@ -13,3 +13,7 @@ export const Errors = {
 } as const;
 
 export type { AppError };
+
+export type ActionResult<T = void> =
+  | { success: true; data?: T }
+  | { success: false; error: string };
